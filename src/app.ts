@@ -2,8 +2,8 @@ import { notEqual } from "assert";
 import express, { Application, Request, Response } from "express";
 import { model, Schema } from "mongoose";
 import { version } from "os";
-import { Book } from "./app/models/notes.controller";
-import { booksRoutes } from "./app/controllers/notes.controller";
+import { Book } from "./app/models/books.controller";
+import { booksRoutes } from "./app/controllers/books.controller";
 
 const app: Application = express();
 
