@@ -1,22 +1,21 @@
-import express, { Application, Request, Response } from "express";
+import express, { Request, Response } from "express";
+import { errorHandler } from "./app/middlewares/errorHandler";
 import { booksRoutes } from "./app/controllers/books.controller";
 import { borrowRoutes } from "./app/controllers/borrow.controller";
-import { errorHandler } from "./app/middlewares/errorHandler";
 
-const app: Application = express();
+const app = express();
 
 app.use(express.json());
 
-
+// Mount routes
 app.use("/api", booksRoutes);
-
 app.use("/api", borrowRoutes);
 
-app.use(errorHandler);
-
-app.get('/', (req: Request, res: Response) => {
-    res.send('Welcome to node app');
+app.get("/", (req: Request, res: Response) => {
+  res.send("Welcome to node app");
 });
 
+// Error handler middleware
+app.use(errorHandler);
 
 export default app;

@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { Borrow } from "../models/borrow.model";
 import { Book } from "../models/books.model";
 
@@ -15,65 +15,62 @@ Book.schema.statics.updateAvailability = async function (bookId: string) {
     }
 };
 
-borrowRoutes.post('/borrow', async (req: Request, res: Response, next) => {
+borrowRoutes.post(
+    '/borrow',
+    async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { book: bookId, quantity, dueDate } = req.body;
 
-    try {
-        const { book: bookId, quantity, dueDate } = req.body;
+            if (!bookId || !quantity || !dueDate) {
+                res.status(400).json({
+                    success: false,
+                    message: 'Missing required fields',
+                    error: 'book, quantity, and dueDate are required',
+                });
+                return;
+            }
 
-        if (!bookId || !quantity || !dueDate) {
-            return res.status(400).json({
-                success: false,
-                message: 'Missing required fields',
-                error: 'book, quantity, and dueDate are required'
+            const book = await Book.findById(bookId);
+            if (!book) {
+                res.status(404).json({
+                    success: false,
+                    message: 'Book not found',
+                    data: null,
+                });
+                return;
+            }
+
+            if (!book.available || book.copies < quantity) {
+                res.status(400).json({
+                    success: false,
+                    message: 'Not enough copies available',
+                    data: null,
+                });
+                return;
+            }
+
+            book.copies -= quantity;
+            await book.save();
+
+            // Custom static method you define on your model
+            await Book.updateAvailability(bookId);
+
+            const borrowRecord = await Borrow.create({
+                book: bookId,
+                quantity,
+                dueDate,
             });
-        }
 
-        // Find the book to borrow
-        const book = await Book.findById(bookId);
-        if (!book) {
-            return res.status(404).json({
-                success: false,
-                message: 'Book not found',
-                data: null,
+            res.status(201).json({
+                success: true,
+                message: 'Book borrowed successfully',
+                data: borrowRecord,
             });
+        } catch (error) {
+            next(error);
         }
-
-        // Find the book copies
-        if (!book.available || book.copies < quantity) {
-            return res.status(400).json({
-                success: false,
-                message: 'Not enough copies available',
-                data: null,
-            });
-        }
-
-        // remove copies from book
-        book.copies -= quantity;
-
-        // Save updated copies
-        await book.save();
-
-        // Update availability
-        await Book.updateAvailability(bookId);
-
-        // Create borrow record
-        const borrowRecord = await Borrow.create({
-            book: bookId,
-            quantity,
-            dueDate,
-        });
-
-        res.status(201).json({
-            success: true,
-            message: 'Book borrowed successfully',
-            data: borrowRecord,
-        });
-
-    } catch (error) {
-        next(error);
     }
-});
-
+);
 
 borrowRoutes.get('/borrow', async (req: Request, res: Response, next) => {
     try {

@@ -1,9 +1,9 @@
-import express, { NextFunction, Request, Response } from "express";
+import express, { Request, Response } from "express";
 import { Book } from "../models/books.model";
 
 export const booksRoutes = express.Router();
 
-booksRoutes.post('/books', async (req: Request, res: Response, next) => {
+booksRoutes.post('/books', async (req: Request, res: Response, next): Promise<void> => {
     try {
         const book = await Book.create(req.body);
         res.status(201).json({
@@ -13,7 +13,7 @@ booksRoutes.post('/books', async (req: Request, res: Response, next) => {
         });
     } catch (error: any) {
         if (error.code === 11000) {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'Duplicate entry',
                 error: `A book with the ISBN '${req.body.isbn}' already exists.`
