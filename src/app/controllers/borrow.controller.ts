@@ -15,7 +15,7 @@ Book.schema.statics.updateAvailability = async function (bookId: string) {
     }
 };
 
-borrowRoutes.post('/borrow', async (req: Request, res: Response) => {
+borrowRoutes.post('/borrow', async (req: Request, res: Response, next) => {
 
     try {
         const { book: bookId, quantity, dueDate } = req.body;
@@ -70,16 +70,12 @@ borrowRoutes.post('/borrow', async (req: Request, res: Response) => {
         });
 
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Failed to borrow book',
-            error: (error as Error).message,
-        });
+        next(error);
     }
 });
 
 
-borrowRoutes.get('/borrow', async (req: Request, res: Response) => {
+borrowRoutes.get('/borrow', async (req: Request, res: Response, next) => {
     try {
         const summary = await Borrow.aggregate([
             {
@@ -115,10 +111,6 @@ borrowRoutes.get('/borrow', async (req: Request, res: Response) => {
             data: summary,
         });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Failed to retrieve borrowed books summary',
-            error: (error as Error).message,
-        });
+        next(error);
     }
 });

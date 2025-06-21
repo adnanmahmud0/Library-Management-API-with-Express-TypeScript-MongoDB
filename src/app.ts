@@ -14,9 +14,9 @@ app.use("/api", borrowRoutes);
 
 app.use(errorHandler);
 
-
 app.get('/', (req: Request, res: Response) => {
     res.send('Welcome to node app');
 });
+
 
 export default app;

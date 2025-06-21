@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { Book } from "../models/books.model";
 
 export const booksRoutes = express.Router();
@@ -11,7 +11,14 @@ booksRoutes.post('/books', async (req: Request, res: Response, next) => {
             message: "Book created successfully",
             data: book
         });
-    } catch (error) {
+    } catch (error: any) {
+        if (error.code === 11000) {
+            return res.status(400).json({
+                success: false,
+                message: 'Duplicate entry',
+                error: `A book with the ISBN '${req.body.isbn}' already exists.`
+            });
+        }
         next(error);
     }
 });
@@ -75,7 +82,6 @@ booksRoutes.delete('/books/:bookId', async (req: Request, res: Response, next) =
             message: deletedBook ? 'Book deleted successfully' : 'Book not found',
             data: deletedBook || null,
         });
-
 
     } catch (error) {
         next(error);
