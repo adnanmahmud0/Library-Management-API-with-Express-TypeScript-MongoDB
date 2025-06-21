@@ -1,16 +1,18 @@
-import { notEqual } from "assert";
 import express, { Application, Request, Response } from "express";
-import { model, Schema } from "mongoose";
-import { version } from "os";
-import { Book } from "./app/models/books.controller";
 import { booksRoutes } from "./app/controllers/books.controller";
+import { borrowRoutes } from "./app/controllers/borrow.controller";
+import { errorHandler } from "./app/middlewares/errorHandler";
 
 const app: Application = express();
 
-app.use(express.json())
+app.use(express.json());
 
 
-app.use("/api", booksRoutes)
+app.use("/api", booksRoutes);
+
+app.use("/api", borrowRoutes);
+
+app.use(errorHandler);
 
 
 app.get('/', (req: Request, res: Response) => {

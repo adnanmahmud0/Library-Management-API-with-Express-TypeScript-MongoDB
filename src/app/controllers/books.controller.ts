@@ -1,69 +1,83 @@
 import express, { Request, Response } from "express";
-import { Book } from "../models/books.controller";
+import { Book } from "../models/books.model";
 
-export const booksRoutes = express.Router()
+export const booksRoutes = express.Router();
 
-booksRoutes.post('/books', async (req: Request, res: Response) => {
-
-    const body = req.body;
-    const data = await Book.create(body);
-
-    res.status(201).json({
-        success: true,
-        message: "Book created successfully",
-        data
-    })
+booksRoutes.post('/books', async (req: Request, res: Response, next) => {
+    try {
+        const book = await Book.create(req.body);
+        res.status(201).json({
+            success: true,
+            message: "Book created successfully",
+            data: book
+        });
+    } catch (error) {
+        next(error);
+    }
 });
 
-booksRoutes.get('/books', async (req: Request, res: Response) => {
+booksRoutes.get('/books', async (req: Request, res: Response, next) => {
+    try {
+        const { filter, sortBy = 'createdAt', sort = 'desc', limit = '10' } = req.query;
+        const query: any = {};
 
-    const body = req.body;
-    const data = await Book.find(body);
+        if (filter) query.genre = filter;
+        const sortOrder = sort === 'asc' ? 1 : -1;
 
-    res.status(201).json({
-        "success": true,
-        "message": "Books retrieved successfully",
-        data
-    })
+        const books = await Book.find(query)
+            .sort({ [sortBy as string]: sortOrder })
+            .limit(parseInt(limit as string));
+
+        res.status(200).json({
+            success: true,
+            message: 'Books retrieved successfully',
+            data: books,
+        });
+    } catch (error) {
+        next(error);
+    }
 });
 
-booksRoutes.get('/books/:bookId', async (req: Request, res: Response) => {
+booksRoutes.get('/books/:bookId', async (req: Request, res: Response, next) => {
+    try {
+        const book = await Book.findById(req.params.bookId);
 
-    const { bookId } = req.params;
-
-    const book = await Book.findById(bookId);
-
-    res.status(200).json({
-        success: true,
-        message: 'Book retrieved successfully',
-        data: book,
-    });
+        res.status(book ? 200 : 404).json({
+            success: !!book,
+            message: book ? 'Book retrieved successfully' : 'Book not found',
+            data: book || null,
+        });
+    } catch (error) {
+        next(error);
+    }
 });
 
-booksRoutes.patch('/books/:bookId', async (req: Request, res: Response) => {
+booksRoutes.put('/books/:bookId', async (req: Request, res: Response, next) => {
+    try {
+        const updatedBook = await Book.findByIdAndUpdate(req.params.bookId, req.body, { new: true, runValidators: true });
 
-    const bookId = req.params.bookId;
-
-    const updatedBody = req.body;
-
-    const book = await Book.findByIdAndUpdate(bookId, updatedBody, { new: true })
-
-    res.status(201).json({
-        success: true,
-        message: 'Book retrieved successfully',
-        data: book,
-    });
+        res.status(updatedBook ? 200 : 404).json({
+            success: !!updatedBook,
+            message: updatedBook ? 'Book updated successfully' : 'Book not found',
+            data: updatedBook || null,
+        });
+    } catch (error) {
+        next(error);
+    }
 });
 
-booksRoutes.delete('/books/:bookId', async (req: Request, res: Response) => {
+booksRoutes.delete('/books/:bookId', async (req: Request, res: Response, next) => {
+    try {
+        const deletedBook = await Book.findByIdAndDelete(req.params.bookId);
 
-    const bookId = req.params.bookId;
+        res.status(deletedBook ? 200 : 404).json({
+            success: !!deletedBook,
+            message: deletedBook ? 'Book deleted successfully' : 'Book not found',
+            data: deletedBook || null,
+        });
 
-    const book = await Book.findByIdAndDelete(bookId, { new: true })
 
-    res.status(201).json({
-        success: true,
-        message: "Book deleted successfully",
-        data: book,
-    })
+    } catch (error) {
+        next(error);
+    }
 });
