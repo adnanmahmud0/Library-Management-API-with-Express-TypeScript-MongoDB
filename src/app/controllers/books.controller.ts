@@ -8,10 +8,15 @@ export const booksRoutes = express.Router();
 booksRoutes.post('/books', async (req: Request, res: Response, next): Promise<void> => {
     try {
         const book = await Book.create(req.body);
+        // Convert Mongoose document to plain JS object
+        const bookObj = book.toObject();
+        // Remove the _id field
+        const { _id, ...bookWithoutId } = bookObj;
+
         res.status(201).json({
             success: true,
             message: "Book created successfully",
-            data: book
+            data: bookWithoutId
         });
     } catch (error: any) {
         //if find duplicate value then show this error
@@ -84,12 +89,12 @@ booksRoutes.put('/books/:bookId', async (req: Request, res: Response, next) => {
 //delete book by id
 booksRoutes.delete('/books/:bookId', async (req: Request, res: Response, next) => {
     try {
-        const deletedBook = await Book.findByIdAndDelete(req.params.bookId, { new: true, runValidators: true });
+        const deletedBook = await Book.findByIdAndDelete(req.params.bookId);
 
         res.status(deletedBook ? 200 : 404).json({
             success: !!deletedBook,
             message: deletedBook ? 'Book deleted successfully' : 'Book not found',
-            data: deletedBook || null,
+            data: null,
         });
 
     } catch (error) {
