@@ -12,16 +12,18 @@ An Express.js + TypeScript + MongoDB (Mongoose) powered RESTful API for managing
 
 ## 📁 Project Structure
 
+
 ```
 
 📦src
 ┣ 📂app
-┃ ┣ 📂controllers        # API controllers for books and borrow operations
-┃ ┣ 📂middlewares        # Centralized error handling middleware
-┃ ┣ 📂models             # Mongoose models and schema logic
-┃ ┗ 📂config             # Environment configuration and DB connection
-┣ 📜app.ts               # App-level middleware setup
-┣ 📜server.ts            # Entry point for the server
+┃ ┣ 📂controllers        # API controllers for handling books and borrow operations
+┃ ┣ 📂middlewares        # Centralized middleware for error handling
+┃ ┣ 📂models             # Mongoose schemas and models for MongoDB collections
+┃ ┗ 📂config             # Environment configuration and MongoDB connection logic
+┣ 📜app.ts               # Express app initialization and middleware registration
+┣ 📜server.ts            # Application entry point (server startup)
+
 
 ````
 
