@@ -84,7 +84,7 @@ booksRoutes.put('/books/:bookId', async (req: Request, res: Response, next) => {
 //delete book by id
 booksRoutes.delete('/books/:bookId', async (req: Request, res: Response, next) => {
     try {
-        const deletedBook = await Book.findByIdAndDelete(req.params.bookId);
+        const deletedBook = await Book.findByIdAndDelete(req.params.bookId, { new: true, runValidators: true });
 
         res.status(deletedBook ? 200 : 404).json({
             success: !!deletedBook,
