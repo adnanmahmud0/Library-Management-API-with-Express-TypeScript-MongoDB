@@ -1,8 +1,8 @@
 import { ErrorRequestHandler } from 'express';
-import mongoose, { Error as MongooseError } from 'mongoose';
+import mongoose from 'mongoose';
 
 export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-    // ValidationError
+    // ValidationError and set error valid strucher
     if (err instanceof mongoose.Error.ValidationError) {
         const simplifiedErrors: Record<string, any> = {};
 
@@ -38,7 +38,7 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
         return;
     }
 
-
+    //send error if id is not valid
     if (err instanceof mongoose.Error.CastError) {
         res.status(400).json({
             message: 'Invalid ID format',
@@ -53,7 +53,7 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
         return;
     }
 
-    // Default error handler
+    // Default error handler for other error
     res.status(500).json({
         message: 'Something went wrong',
         success: false,

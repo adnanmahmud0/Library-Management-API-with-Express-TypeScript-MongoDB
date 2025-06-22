@@ -3,6 +3,8 @@ import { Book } from "../models/books.model";
 
 export const booksRoutes = express.Router();
 
+
+//upload book data
 booksRoutes.post('/books', async (req: Request, res: Response, next): Promise<void> => {
     try {
         const book = await Book.create(req.body);
@@ -12,6 +14,7 @@ booksRoutes.post('/books', async (req: Request, res: Response, next): Promise<vo
             data: book
         });
     } catch (error: any) {
+        //if find duplicate value then show this error
         if (error.code === 11000) {
             res.status(400).json({
                 success: false,
@@ -19,10 +22,13 @@ booksRoutes.post('/books', async (req: Request, res: Response, next): Promise<vo
                 error: `A book with the ISBN '${req.body.isbn}' already exists.`
             });
         }
+        //move to other error handeler
         next(error);
     }
 });
 
+
+//show all books with aggregation pipeline
 booksRoutes.get('/books', async (req: Request, res: Response, next) => {
     try {
         const { filter, sortBy = 'createdAt', sort = 'desc', limit = '10' } = req.query;
@@ -45,6 +51,7 @@ booksRoutes.get('/books', async (req: Request, res: Response, next) => {
     }
 });
 
+//show book by id
 booksRoutes.get('/books/:bookId', async (req: Request, res: Response, next) => {
     try {
         const book = await Book.findById(req.params.bookId);
@@ -59,6 +66,7 @@ booksRoutes.get('/books/:bookId', async (req: Request, res: Response, next) => {
     }
 });
 
+//updated book by id
 booksRoutes.put('/books/:bookId', async (req: Request, res: Response, next) => {
     try {
         const updatedBook = await Book.findByIdAndUpdate(req.params.bookId, req.body, { new: true, runValidators: true });
@@ -73,6 +81,7 @@ booksRoutes.put('/books/:bookId', async (req: Request, res: Response, next) => {
     }
 });
 
+//delete book by id
 booksRoutes.delete('/books/:bookId', async (req: Request, res: Response, next) => {
     try {
         const deletedBook = await Book.findByIdAndDelete(req.params.bookId);
