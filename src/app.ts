@@ -12,7 +12,7 @@ app.use("/api", booksRoutes);
 app.use("/api", borrowRoutes);
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Welcome to node app");
+  res.send("Welcome to Libary Management API");
 });
 
 // Error handler middleware
