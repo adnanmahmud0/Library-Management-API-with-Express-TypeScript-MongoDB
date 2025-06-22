@@ -1,17 +1,19 @@
 import { Server } from 'http'
 import app from './app';
 import mongoose from 'mongoose';
+import config from './config';
+
 
 let server: Server;
 
-const PORT = 5000;
+
 
 async function main() {
     try {
-        await mongoose.connect('mongodb+srv://library-management:library-management@adnan.f8a3c.mongodb.net/library-management?retryWrites=true&w=majority&appName=adnan');
+        await mongoose.connect(`mongodb+srv://${config.DB_USER}:${config.DB_PASS}@adnan.f8a3c.mongodb.net/library-management?retryWrites=true&w=majority&appName=adnan`);
         console.log("mongos connected");
-        server = app.listen(PORT, () => {
-            console.log(`app is listening on port ${PORT}`);
+        server = app.listen(config.PORT, () => {
+            console.log(`app is listening on port ${config.PORT}`);
         });
 
     } catch (error) {
