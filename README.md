@@ -1,7 +1,3 @@
-
----
-
-```markdown
 # 📚 Library Management API
 
 An Express.js + TypeScript + MongoDB (Mongoose) powered RESTful API for managing library books and borrowing records. This system ensures proper schema validation, filtering, availability logic, and borrowing summaries via aggregation.
@@ -12,20 +8,16 @@ An Express.js + TypeScript + MongoDB (Mongoose) powered RESTful API for managing
 
 ## 📁 Project Structure
 
-
 ```
-
 📦src
-┣ 📂app
-┃ ┣ 📂controllers        # API controllers for handling books and borrow operations
-┃ ┣ 📂middlewares        # Centralized middleware for error handling
-┃ ┣ 📂models             # Mongoose schemas and models for MongoDB collections
-┃ ┗ 📂config             # Environment configuration and MongoDB connection logic
-┣ 📜app.ts               # Express app initialization and middleware registration
-┣ 📜server.ts            # Application entry point (server startup)
-
-
-````
+ ┣ 📂app
+ ┃ ┣ 📂controllers        # API controllers for books and borrow operations
+ ┃ ┣ 📂middlewares        # Centralized error handling middleware
+ ┃ ┣ 📂models             # Mongoose models and schema logic
+ ┃ ┗ 📂config             # Environment configuration and DB connection
+ ┣ 📜app.ts               # App-level middleware setup
+ ┣ 📜server.ts            # Entry point for the server
+```
 
 ## 🧠 Features
 
@@ -59,7 +51,7 @@ An Express.js + TypeScript + MongoDB (Mongoose) powered RESTful API for managing
 git clone https://github.com/adnanmahmud0/libraryManagementAPI.git
 cd libraryManagementAPI
 npm install
-````
+```
 
 ## 📦 Environment Setup
 
@@ -76,12 +68,12 @@ Replace `<username>` and `<password>` with your MongoDB credentials.
 
 ## 🔧 Available Scripts
 
-| Command            | Description                      |
-| ------------------ | -------------------------------- |
-| `npm run dev`      | Run the app in development mode  |
-| `npm run build`    | Compile TypeScript to JavaScript |
-| `npm start`        | Start the compiled app           |
-| `npm run lint`     | Lint the project                 |
+| Command         | Description                        |
+|----------------|------------------------------------|
+| `npm run dev`  | Run the app in development mode    |
+| `npm run build`| Compile TypeScript to JavaScript   |
+| `npm start`    | Start the compiled app             |
+| `npm run lint` | Lint the project                   |
 | `npm run lint:fix` | Fix linting issues automatically |
 
 ---
@@ -91,7 +83,6 @@ Replace `<username>` and `<password>` with your MongoDB credentials.
 ### 📚 Books
 
 #### 1. Create Book
-
 `POST /api/books`
 
 ```json
@@ -106,15 +97,12 @@ Replace `<username>` and `<password>` with your MongoDB credentials.
 ```
 
 #### 2. Get All Books
-
 `GET /api/books?filter=FANTASY&sortBy=createdAt&sort=desc&limit=5`
 
 #### 3. Get Book by ID
-
 `GET /api/books/:bookId`
 
 #### 4. Update Book
-
 `PUT /api/books/:bookId`
 
 ```json
@@ -124,7 +112,6 @@ Replace `<username>` and `<password>` with your MongoDB credentials.
 ```
 
 #### 5. Delete Book
-
 `DELETE /api/books/:bookId`
 
 ---
@@ -132,7 +119,6 @@ Replace `<username>` and `<password>` with your MongoDB credentials.
 ### 📖 Borrow
 
 #### 6. Borrow a Book
-
 `POST /api/borrow`
 
 ```json
@@ -146,7 +132,6 @@ Replace `<username>` and `<password>` with your MongoDB credentials.
 > ✅ Ensures copies are available and updates `available` status accordingly using Mongoose instance methods.
 
 #### 7. Borrowed Summary
-
 `GET /api/borrow`
 
 Returns:
@@ -166,8 +151,6 @@ Returns:
 ---
 
 ## 🧪 Demo Data
-
-Here are some sample book entries:
 
 ```json
 [
@@ -196,15 +179,15 @@ Here are some sample book entries:
 
 ## 🛠️ Troubleshooting
 
-* **MongoDB connection error**: Ensure `.env` is properly configured.
-* **Port in use**: Change the `PORT` variable in `.env`.
-* **Typescript errors**: Run `npm run build` to check compilation issues.
+- **MongoDB connection error**: Ensure `.env` is properly configured.
+- **Port in use**: Change the `PORT` variable in `.env`.
+- **Typescript errors**: Run `npm run build` to check compilation issues.
 
 ---
 
 ## 👤 Contributors
 
-* **Adnan Mahmud** – [GitHub](https://github.com/adnanmahmud0)
+- **Adnan Mahmud** – [GitHub](https://github.com/adnanmahmud0)
 
 ---
 
@@ -220,4 +203,10 @@ This project is licensed under the ISC License.
 
 ---
 
+## 📌 Submission Info
 
+- ✅ [Live Link](https://library-management-five-delta.vercel.app/)
+- ✅ [GitHub Repo](https://github.com/adnanmahmud0/libraryManagementAPI)
+- ⏳ Video Link: Coming soon
+
+---
