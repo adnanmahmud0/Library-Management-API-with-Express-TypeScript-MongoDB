@@ -118,7 +118,8 @@ Add the following to your `.env`:
 
 ```
 PORT=5000
-DATABASE_URL=your-mongodb-uri
+DB_USER=your-mongodb-uri
+DB_PASS=your-mongodb-pass
 ```
 
 ---
