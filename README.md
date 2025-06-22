@@ -1,174 +1,221 @@
 
 ---
 
+```markdown
 # 📚 Library Management API
 
-A RESTful API built using **Express**, **TypeScript**, and **MongoDB** to manage a library system. This API supports CRUD operations for books, borrowing functionality with business logic enforcement, filtering, validation, and borrowed book summaries using MongoDB aggregation.
+An Express.js + TypeScript + MongoDB (Mongoose) powered RESTful API for managing library books and borrowing records. This system ensures proper schema validation, filtering, availability logic, and borrowing summaries via aggregation.
 
-🌐 Live Demo: [https://library-management-five-delta.vercel.app/](https://library-management-five-delta.vercel.app/)
-📁 GitHub Repository: [https://github.com/adnanmahmud0/libraryManagementAPI](https://github.com/adnanmahmud0/libraryManagementAPI)
-🎥 Video Walkthrough: *Coming Soon*
+## 🌐 Live Demo
 
----
+👉 [View Deployed App](https://library-management-five-delta.vercel.app/)
 
-## 📌 Table of Contents
+## 📁 Project Structure
 
-* [Introduction](#introduction)
-* [Features](#features)
-* [API Endpoints](#api-endpoints)
-* [Installation](#installation)
-* [Usage](#usage)
-* [Project Structure](#project-structure)
-* [Environment Variables](#environment-variables)
-* [Technologies Used](#technologies-used)
-* [Examples](#examples)
-* [Troubleshooting](#troubleshooting)
-* [Contributors](#contributors)
-* [License](#license)
+```
 
----
+📦src
+┣ 📂app
+┃ ┣ 📂controllers        # API controllers for books and borrow operations
+┃ ┣ 📂middlewares        # Centralized error handling middleware
+┃ ┣ 📂models             # Mongoose models and schema logic
+┃ ┗ 📂config             # Environment configuration and DB connection
+┣ 📜app.ts               # App-level middleware setup
+┣ 📜server.ts            # Entry point for the server
 
-## 📖 Introduction
+````
 
-The **Library Management API** provides a backend solution for managing a collection of books and their borrowing lifecycle. Built using TypeScript, Express, and MongoDB, the API includes comprehensive validation, error handling, and middleware to ensure data integrity and smooth user experience.
+## 🧠 Features
 
----
-
-## ✨ Features
-
-* ✅ Create, read, update, delete books
-* 📚 Borrow books with availability checks
-* 📊 Borrow summary using MongoDB aggregation
-* 🧠 Business logic via Mongoose instance/static methods
-* 🔄 Mongoose middleware hooks (pre/post)
-* 🔍 Genre filtering, sorting, pagination
-* 📦 MongoDB with Mongoose ODM
-* 🚨 Custom validation error response format
+- CRUD operations for books
+- Borrowing system with copy validation and availability checks
+- Aggregated summary of borrowed books
+- Filtering and sorting support
+- Proper error response format
+- Mongoose middleware and static methods implemented
+- Type-safe codebase with TypeScript
 
 ---
 
-## 📡 API Endpoints
+## 📖 Table of Contents
 
-### 📘 Books
-
-* `POST /api/books` - Add a new book
-* `GET /api/books` - Get all books with filters
-* `GET /api/books/:bookId` - Get a single book by ID
-* `PUT /api/books/:bookId` - Update book details
-* `DELETE /api/books/:bookId` - Delete a book
-
-### 📕 Borrow
-
-* `POST /api/borrow` - Borrow a book with validation
-* `GET /api/borrow` - Aggregated summary of borrow data
+- [Installation](#installation)
+- [Environment Setup](#environment-setup)
+- [Available Scripts](#available-scripts)
+- [API Endpoints](#api-endpoints)
+- [Demo Data](#demo-data)
+- [Project Structure](#project-structure)
+- [Troubleshooting](#troubleshooting)
+- [Contributors](#contributors)
+- [License](#license)
 
 ---
 
 ## ⚙️ Installation
 
-1. Clone the repo
-2. Install dependencies
-3. Set up `.env` file with MongoDB URI
-4. Run `npm run dev` to start development server
+```bash
+git clone https://github.com/adnanmahmud0/libraryManagementAPI.git
+cd libraryManagementAPI
+npm install
+````
 
----
+## 📦 Environment Setup
 
-## 🚀 Usage
+Create a `.env` file at the root with the following variables:
 
-* Base URL: `https://library-management-five-delta.vercel.app/api`
-
-### Example: Create Book
-
-Send a `POST /api/books` request with book details.
-
-### Example: Borrow Book
-
-Send a `POST /api/borrow` request with book ID, quantity, and due date.
-
----
-
-## 🧱 Project Structure
-
-```
-src/
-├── app/
-│   ├── controllers/
-│   │   ├── books.controller.ts
-│   │   └── borrow.controller.ts
-│   ├── middlewares/
-│   │   └── errorHandler.ts
-│   ├── models/
-│   │   ├── books.model.ts
-│   │   └── borrow.model.ts
-├── config/
-│   └── index.ts
-├── app.ts
-└── server.ts
-```
-
-Other files:
-
-* `.env`, `package.json`, `tsconfig.json`, `vercel.json`
-
----
-
-## 🛠 Environment Variables
-
-Add the following to your `.env`:
-
-```
+```env
 PORT=5000
-DB_USER=your-mongodb-uri
-DB_PASS=your-mongodb-pass
+DATABASE_URL=mongodb+srv://<username>:<password>@cluster.mongodb.net/libraryDB
+```
+
+Replace `<username>` and `<password>` with your MongoDB credentials.
+
+---
+
+## 🔧 Available Scripts
+
+| Command            | Description                      |
+| ------------------ | -------------------------------- |
+| `npm run dev`      | Run the app in development mode  |
+| `npm run build`    | Compile TypeScript to JavaScript |
+| `npm start`        | Start the compiled app           |
+| `npm run lint`     | Lint the project                 |
+| `npm run lint:fix` | Fix linting issues automatically |
+
+---
+
+## 🚀 API Endpoints
+
+### 📚 Books
+
+#### 1. Create Book
+
+`POST /api/books`
+
+```json
+{
+  "title": "The Theory of Everything",
+  "author": "Stephen Hawking",
+  "genre": "SCIENCE",
+  "isbn": "9780553380163",
+  "description": "An overview of cosmology and black holes.",
+  "copies": 5
+}
+```
+
+#### 2. Get All Books
+
+`GET /api/books?filter=FANTASY&sortBy=createdAt&sort=desc&limit=5`
+
+#### 3. Get Book by ID
+
+`GET /api/books/:bookId`
+
+#### 4. Update Book
+
+`PUT /api/books/:bookId`
+
+```json
+{
+  "copies": 50
+}
+```
+
+#### 5. Delete Book
+
+`DELETE /api/books/:bookId`
+
+---
+
+### 📖 Borrow
+
+#### 6. Borrow a Book
+
+`POST /api/borrow`
+
+```json
+{
+  "book": "64ab3f9e2a4b5c6d7e8f9012",
+  "quantity": 2,
+  "dueDate": "2025-07-18T00:00:00.000Z"
+}
+```
+
+> ✅ Ensures copies are available and updates `available` status accordingly using Mongoose instance methods.
+
+#### 7. Borrowed Summary
+
+`GET /api/borrow`
+
+Returns:
+
+```json
+[
+  {
+    "book": {
+      "title": "The Theory of Everything",
+      "isbn": "9780553380163"
+    },
+    "totalQuantity": 5
+  }
+]
 ```
 
 ---
 
-## 📦 Technologies Used
+## 🧪 Demo Data
 
-* TypeScript
-* Express.js
-* MongoDB + Mongoose
-* dotenv
-* ts-node-dev
-* ESLint
+Here are some sample book entries:
 
----
-
-## 🧪 Examples
-
-### 📚 Demo Books
-
-* The Silent Patient
-* Becoming
-* A Game of Thrones
-* The Theory of Everything
-
-### 📊 Borrowed Books Summary
-
-Returns total quantity borrowed per book with title and ISBN.
-
----
-
-## 🧰 Troubleshooting
-
-| Problem                | Solution                                     |
-| ---------------------- | -------------------------------------------- |
-| MongoDB not connecting | Check `DATABASE_URL` in `.env` file          |
-| Validation errors      | Ensure correct request payload and schema    |
-| Server doesn't start   | Run `npm run dev` or check TypeScript config |
-| Deployment issues      | Verify Vercel setup and environment vars     |
+```json
+[
+  {
+    "title": "The Silent Patient",
+    "author": "Alex Michaelides",
+    "genre": "FICTION",
+    "isbn": "9781250301697",
+    "description": "A psychological thriller...",
+    "copies": 4,
+    "available": true
+  },
+  {
+    "title": "Brief Answers to the Big Questions",
+    "author": "Stephen Hawking",
+    "genre": "SCIENCE",
+    "isbn": "9781984819192",
+    "description": "Final thoughts of Stephen Hawking...",
+    "copies": 5,
+    "available": true
+  }
+]
+```
 
 ---
 
-## 👥 Contributors
+## 🛠️ Troubleshooting
 
-* [Adnan Mahmud](https://github.com/adnanmahmud0)
+* **MongoDB connection error**: Ensure `.env` is properly configured.
+* **Port in use**: Change the `PORT` variable in `.env`.
+* **Typescript errors**: Run `npm run build` to check compilation issues.
+
+---
+
+## 👤 Contributors
+
+* **Adnan Mahmud** – [GitHub](https://github.com/adnanmahmud0)
 
 ---
 
 ## 📄 License
 
-Licensed under the **ISC License**.
+This project is licensed under the ISC License.
 
 ---
+
+## 📹 Video Walkthrough
+
+🛠 Coming soon...
+
+---
+
+
