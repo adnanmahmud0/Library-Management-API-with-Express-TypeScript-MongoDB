@@ -29,6 +29,8 @@ const borrowSchema = new Schema<IBorrow>(
   },
   {
     timestamps: true,
+    
+    versionKey: false,
   }
 );
 
