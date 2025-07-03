@@ -1,10 +1,11 @@
 import express, { Request, Response } from "express";
+import cors from "cors"; 
 import { errorHandler } from "./app/middlewares/errorHandler";
 import { booksRoutes } from "./app/controllers/books.controller";
 import { borrowRoutes } from "./app/controllers/borrow.controller";
 
 const app = express();
-
+app.use(cors());
 app.use(express.json());
 
 // Mount routes
