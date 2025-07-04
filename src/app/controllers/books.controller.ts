@@ -36,25 +36,47 @@ booksRoutes.post('/books', async (req: Request, res: Response, next): Promise<vo
 //show all books with aggregation pipeline
 booksRoutes.get('/books', async (req: Request, res: Response, next) => {
     try {
-        const { filter, sortBy = 'createdAt', sort = 'desc', limit = '10' } = req.query;
+        const {
+            filter,
+            sortBy = 'createdAt',
+            sort = 'desc',
+            limit = '10',
+            page = '1', // ✅ default to page 1 if not provided
+        } = req.query;
+
         const query: any = {};
 
         if (filter) query.genre = filter;
+
         const sortOrder = sort === 'asc' ? 1 : -1;
+        const limitNum = parseInt(limit as string);
+        const pageNum = parseInt(page as string);
+        const skip = (pageNum - 1) * limitNum;
+
+        // Total count for pagination metadata
+        const total = await Book.countDocuments(query);
 
         const books = await Book.find(query)
             .sort({ [sortBy as string]: sortOrder })
-            .limit(parseInt(limit as string));
+            .skip(skip) // ✅ apply skip for pagination
+            .limit(limitNum); // ✅ apply limit
 
         res.status(200).json({
             success: true,
             message: 'Books retrieved successfully',
             data: books,
+            meta: {
+                total,
+                page: pageNum,
+                limit: limitNum,
+                totalPages: Math.ceil(total / limitNum),
+            },
         });
     } catch (error) {
         next(error);
     }
 });
+
 
 //show book by id
 booksRoutes.get('/books/:bookId', async (req: Request, res: Response, next) => {
